@@ -3,6 +3,10 @@
 	"name": "HostFilter-WebExtension",
 	"version": "0.1",
 	
+	"permissions": [
+		"notifications"
+	],
+	
 	"background": {
 		"scripts": ["main.js"]
 	}

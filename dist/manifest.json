@@ -4,10 +4,16 @@
 	"version": "0.1",
 	
 	"permissions": [
-		"notifications"
+		"<all_urls>",
+		"webRequest",
+		"webRequestBlocking"
 	],
 	
 	"background": {
 		"scripts": ["main.js"]
-	}
+	},
+	
+	"web_accessible_resources": [
+		"empty_content/text.txt"
+	]
 }

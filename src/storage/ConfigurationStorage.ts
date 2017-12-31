@@ -15,7 +15,7 @@ export class ConfigurationStorage extends Storage<Configuration> {
     }
 
     protected getKey(): string {
-        return "hosts";
+        return "configuration";
     }
 
     protected generateDefault(): Configuration {

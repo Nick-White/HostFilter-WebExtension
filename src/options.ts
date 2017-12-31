@@ -34,9 +34,8 @@ class ConfigurationAspect {
     }
 
     private static initActions(): void {
-        var self = this;
-        self.$saveButton.on("click", function() {
-            self.save();
+        this.$saveButton.on("click", () => {
+            this.save();
         });
     }
 
@@ -51,15 +50,14 @@ class ConfigurationAspect {
     }
 
     public static populate(): void {
-        var self = this;
         ConfigurationStorage.getInstance().get().then((configuration: Configuration | null) => {
             if (configuration == null) {
                 throw new Error("Configuration not found!");
             }
-            self.$logEntryType.val(LogEntryType[configuration.logEntryType]);
-            JQueryFieldUtils.setCheckedRadio(self.$logAllowedRadios, BooleanUtils.toString(configuration.logAllowed));
-            JQueryFieldUtils.setCheckedRadio(self.$logBlockedRadios, BooleanUtils.toString(configuration.logBlocked));
-            JQueryFieldUtils.setCheckedRadio(self.$logDistinctRadios, BooleanUtils.toString(configuration.logDistinct));
+            this.$logEntryType.val(LogEntryType[configuration.logEntryType]);
+            JQueryFieldUtils.setCheckedRadio(this.$logAllowedRadios, BooleanUtils.toString(configuration.logAllowed));
+            JQueryFieldUtils.setCheckedRadio(this.$logBlockedRadios, BooleanUtils.toString(configuration.logBlocked));
+            JQueryFieldUtils.setCheckedRadio(this.$logDistinctRadios, BooleanUtils.toString(configuration.logDistinct));
         });
     }
 }
@@ -80,9 +78,8 @@ class ImportHostsAspect {
     }
 
     private static initActions(): void {
-        var self = this;
-        self.$button.on("click", () => {
-            self.import();
+        this.$button.on("click", () => {
+            this.import();
         });
     }
 

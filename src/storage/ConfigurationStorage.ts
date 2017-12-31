@@ -1,58 +1,29 @@
 import { Configuration, LogEntryType } from "../model/Configuration";
 import StorageObject = browser.storage.StorageObject;
+import { Storage } from "./Storage";
 
-export class ConfigurationStorage {
+export class ConfigurationStorage extends Storage<Configuration> {
 
-    private static readonly STORAGE_KEY: string = "configuration";
+    private static readonly INSTANCE: ConfigurationStorage = new ConfigurationStorage();
 
-    public static createDefaultIfNeeded(): Promise<void> {
-        return new Promise<void>((resolve: () => void) => {
-            this.get().then((configuration: Configuration | null) => {
-                if (configuration === null) {
-                    this.createDefault().then(() => {
-                        resolve();
-                    });
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
-    
-    public static get(): Promise<Configuration | null> {
-        return new Promise<Configuration | null>((resolve: (configuration: Configuration | null) => void) => {
-            browser.storage.local.get(this.STORAGE_KEY).then((storage: StorageObject) => {
-                let configuration: Configuration | null = null;
-                if (this.STORAGE_KEY in storage) {
-                    configuration = (storage[this.STORAGE_KEY] as any) as Configuration;
-                }
-                resolve(configuration);
-            });
-        });
+    private constructor() {
+        super();
     }
 
-    public static set(configuration: Configuration): Promise<void> {
-        return new Promise<void>((resolve: () => void) => {
-            let storage = {} as StorageObject;
-            storage[this.STORAGE_KEY] = configuration as any;
-
-            browser.storage.local.set(storage).then(() => {
-                resolve();
-            });
-        });
+    public static getInstance(): ConfigurationStorage {
+        return this.INSTANCE;
     }
 
-    private static createDefault(): Promise<void> {
-        return new Promise<void>((resolve: () => void) => {
-            let defaultConfiguration: Configuration = {
-                logEntryType:  LogEntryType.HOST,
-                logAllowed: false,
-                logBlocked: false,
-                logDistinct: true
-            };
-            this.set(defaultConfiguration).then(() => {
-                resolve();
-            });
-        });
+    protected getKey(): string {
+        return "hosts";
+    }
+
+    protected generateDefault(): Configuration {
+        return {
+            logEntryType: LogEntryType.HOST,
+            logAllowed: false,
+            logBlocked: false,
+            logDistinct: true
+        };
     }
 }

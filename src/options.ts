@@ -47,12 +47,12 @@ class ConfigurationAspect {
             logBlocked: BooleanUtils.fromString(JQueryFieldUtils.getCheckedRadioValue(this.$logBlockedRadios)),
             logDistinct: BooleanUtils.fromString(JQueryFieldUtils.getCheckedRadioValue(this.$logDistinctRadios))
         };
-        ConfigurationStorage.set(configuration);
+        ConfigurationStorage.getInstance().set(configuration);
     }
 
     public static populate(): void {
         var self = this;
-        ConfigurationStorage.get().then((configuration: Configuration | null) => {
+        ConfigurationStorage.getInstance().get().then((configuration: Configuration | null) => {
             if (configuration == null) {
                 throw new Error("Configuration not found!");
             }
@@ -93,7 +93,7 @@ class ImportHostsAspect {
             let fileContent: ArrayBuffer = fileReader.result;
             JSZip.loadAsync(fileContent).then((zip: JSZip) => {
                 new HostsFromZipReader(zip).read().then((hosts: Hosts) => {
-                    HostsStorage.set(hosts);
+                    HostsStorage.getInstance().set(hosts);
                 });
             });
         };

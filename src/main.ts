@@ -3,7 +3,7 @@ import { ConfigurationStorage } from "./storage/ConfigurationStorage";
 export class Main {
 
     public static run(): void {
-        ConfigurationStorage.createDefaultIfNeeded().then(() => {
+        ConfigurationStorage.getInstance().createDefaultIfNeeded().then(() => {
             var blockedHosts = ["cdn.gsmarena.com"];
             blockedHosts.forEach((blockedHost) => {
                 browser.webRequest.onBeforeRequest.addListener(function(details) {

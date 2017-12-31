@@ -1,13 +1,29 @@
 import { Hosts } from "../model/Hosts";
 import StorageObject = browser.storage.StorageObject;
+import { Storage } from "./Storage";
 
-export class HostsStorage {
+export class HostsStorage extends Storage<Hosts> {
 
-    private static readonly STORAGE_KEY: string = "hosts";
+    private static readonly INSTANCE: HostsStorage = new HostsStorage();
 
-    public static set(hosts: Hosts): void {
-        let storage = {} as StorageObject;
-        storage[this.STORAGE_KEY] = hosts as any;
-        browser.storage.local.set(storage);
+    private constructor() {
+        super();
+    }
+
+    public static getInstance(): HostsStorage {
+        return this.INSTANCE;
+    }
+
+    protected getKey(): string {
+        return "hosts";
+    }
+
+    protected generateDefault(): Hosts {
+        return {
+            blacklistBulk: [],
+            blacklistManual: [],
+            blacklistManualExtra: [],
+            whitelist: []
+        };
     }
 }

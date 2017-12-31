@@ -16,6 +16,8 @@
  "dependencies": {
   "@types/core-js": "^0.9.43",
   "@types/es6-promise": "0.0.33",
-  "jquery": "^3.2.1"
+  "@types/jszip": "^3.1.2",
+  "jquery": "^3.2.1",
+  "jszip": "^3.1.5"
  }
 }

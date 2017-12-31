@@ -23,7 +23,7 @@ var mainConfig = Object.assign({}, commonConfig, {
   }
 });
 var optionsConfig = Object.assign({}, commonConfig, {
-  entry: "./src/options/options.ts",
+  entry: "./src/options.ts",
   output: {
     filename: "options.js",
     path: path.resolve(__dirname, "dist/options")

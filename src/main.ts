@@ -1,9 +1,9 @@
-import { ConfigurationManager } from "./ConfigurationManager";
+import { ConfigurationStorage } from "./storage/ConfigurationStorage";
 
 export class Main {
 
     public static run(): void {
-        ConfigurationManager.createDefaultIfNeeded().then(() => {
+        ConfigurationStorage.createDefaultIfNeeded().then(() => {
             var blockedHosts = ["cdn.gsmarena.com"];
             blockedHosts.forEach((blockedHost) => {
                 browser.webRequest.onBeforeRequest.addListener(function(details) {

@@ -1,10 +1,15 @@
-import { Configuration, LogEntryType } from "../Configuration";
-import { ConfigurationManager } from "../ConfigurationManager";
-import { JQueryFieldUtils } from "../JQueryFieldUtils";
-import { BooleanUtils } from "../BooleanUtils";
+import { Configuration, LogEntryType } from "./model/Configuration";
+import { ConfigurationStorage } from "./storage/ConfigurationStorage";
+import { JQueryFieldUtils } from "./utils/JQueryFieldUtils";
+import { BooleanUtils } from "./utils/BooleanUtils";
 import * as $ from "jquery";
+import * as JSZip from "jszip";
+import { JSZipObject } from "jszip";
+import { HostsFromZipReader } from "./HostsFromZipReader";
+import { Hosts } from "./model/Hosts";
+import { HostsStorage } from "./storage/HostsStorage";
 
-class OptionsPage {
+class ConfigurationAspect {
 
     private static $logEntryType: JQuery<HTMLElement>;
     private static $logAllowedRadios: JQuery<HTMLElement>;
@@ -16,6 +21,7 @@ class OptionsPage {
     public static init(): void {
         this.initReferences();
         this.initActions();
+        this.populate();
     }
 
     private static initReferences(): void {
@@ -41,12 +47,12 @@ class OptionsPage {
             logBlocked: BooleanUtils.fromString(JQueryFieldUtils.getCheckedRadioValue(this.$logBlockedRadios)),
             logDistinct: BooleanUtils.fromString(JQueryFieldUtils.getCheckedRadioValue(this.$logDistinctRadios))
         };
-        ConfigurationManager.set(configuration);
+        ConfigurationStorage.set(configuration);
     }
 
     public static populate(): void {
         var self = this;
-        ConfigurationManager.get().then((configuration: Configuration | null) => {
+        ConfigurationStorage.get().then((configuration: Configuration | null) => {
             if (configuration == null) {
                 throw new Error("Configuration not found!");
             }
@@ -58,7 +64,55 @@ class OptionsPage {
     }
 }
 
+class ImportHostsAspect {
+
+    private static $field: JQuery<HTMLInputElement>;
+    private static $button: JQuery<HTMLElement>;
+
+    public static init(): void {
+        this.initReferences();
+        this.initActions();
+    }
+
+    private static initReferences(): void {
+        this.$field = <JQuery<HTMLInputElement>>$("#importHostsField");
+        this.$button = $("#importHostsButton");
+    }
+
+    private static initActions(): void {
+        var self = this;
+        self.$button.on("click", () => {
+            self.import();
+        });
+    }
+
+    private static import(): void {
+        let file = this.getFile();
+        let fileReader = new FileReader();
+        fileReader.onload = () => {
+            let fileContent: ArrayBuffer = fileReader.result;
+            JSZip.loadAsync(fileContent).then((zip: JSZip) => {
+                new HostsFromZipReader(zip).read().then((hosts: Hosts) => {
+                    HostsStorage.set(hosts);
+                });
+            });
+        };
+        fileReader.readAsArrayBuffer(file);
+    }
+
+    private static getFile(): File {
+        let files: FileList = <FileList>this.$field[0].files;
+        if (files.length === 0) {
+            throw new Error("No import file selected.");
+        }
+        if (files.length > 1) {
+            throw new Error("Only one import file needs to be selected.");
+        }
+        return files[0];
+    }
+}
+
 $(document).ready(function() {
-    OptionsPage.init();
-    OptionsPage.populate();
+    ConfigurationAspect.init();
+    ImportHostsAspect.init();
 });

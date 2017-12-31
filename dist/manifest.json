@@ -2,9 +2,14 @@
 	"manifest_version": 2,
 	"name": "HostFilter-WebExtension",
 	"version": "0.1",
+
+	"options_ui": {
+		"page": "options/options.html"
+	},
 	
 	"permissions": [
 		"<all_urls>",
+		"storage",
 		"webRequest",
 		"webRequestBlocking"
 	],

@@ -1,17 +1,21 @@
-class Main {
+import { ConfigurationManager } from "./ConfigurationManager";
 
-    public run(): void {
-        var blockedHosts = ["cdn.gsmarena.com"];
-        blockedHosts.forEach(function(blockedHost) {
-            browser.webRequest.onBeforeRequest.addListener(function(details) {
-                return {
-                    redirectUrl: browser.extension.getURL("empty_content/text.txt")
-                };
-            }, {
-                urls: ["*://" + blockedHost + "/*"]
-            }, ["blocking"]);
+export class Main {
+
+    public static run(): void {
+        ConfigurationManager.createDefaultIfNeeded().then(() => {
+            var blockedHosts = ["cdn.gsmarena.com"];
+            blockedHosts.forEach((blockedHost) => {
+                browser.webRequest.onBeforeRequest.addListener(function(details) {
+                    return {
+                        redirectUrl: browser.extension.getURL("empty_content/text.txt")
+                    };
+                }, {
+                    urls: ["*://" + blockedHost + "/*"]
+                }, ["blocking"]);
+            });
         });
     }
 }
 
-new Main().run();
+Main.run();

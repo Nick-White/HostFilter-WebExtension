@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>HostFilter-WebExtension options</title>
+		<script type="text/javascript" src="options.js"></script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>Log entry type</td>
+				<td>
+					<select name="logEntryType">
+						<option value="URL">URL</option>
+						<option value="HOST">HOST</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Log allowed</td>
+				<td>
+					<label>
+						<input type="radio" name="logAllowed" value="true">
+						yes
+					</label>
+					<label>
+						<input type="radio" name="logAllowed" value="false">
+						no
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>Log blocked</td>
+				<td>
+					<label>
+						<input type="radio" name="logBlocked" value="true">
+						yes
+					</label>
+					<label>
+						<input type="radio" name="logBlocked" value="false">
+						no
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>Log distinct</td>
+				<td>
+					<label>
+						<input type="radio" name="logDistinct" value="true">
+						yes
+					</label>
+					<label>
+						<input type="radio" name="logDistinct" value="false">
+						no
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<button id="saveButton">Save</button>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

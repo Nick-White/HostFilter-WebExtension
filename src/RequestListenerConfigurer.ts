@@ -1,6 +1,8 @@
 import { Hosts } from "./model/Hosts";
 import { Set } from "typescript-collections";
 import { CollectionUtils } from "./utils/CollectionUtils";
+import BlockingResponse = browser.webRequest.BlockingResponse;
+import Tab = browser.tabs.Tab;
 
 export class RequestListenerConfigurer {
 
@@ -17,8 +19,19 @@ export class RequestListenerConfigurer {
     }
 
     public configure(): void {
-        browser.webRequest.onBeforeRequest.addListener((details: {url: string}) => {
-            return (this.isBlockedHost(details.url)) ? RequestListenerConfigurer.BLOCKING_RESPONSE : null;
+        browser.webRequest.onBeforeRequest.addListener((details: {tabId: number, url: string}): Promise<BlockingResponse> => {
+            return new Promise<BlockingResponse>((resolve: (response: BlockingResponse) => void) => {
+                if (this.isBlockedHost(details.url)) {
+                    browser.tabs.get(details.tabId).then((tab: Tab) => {
+                        if (this.isFreshPopup(tab)) {
+                            browser.tabs.remove(details.tabId);
+                        }
+                        resolve(RequestListenerConfigurer.BLOCKING_RESPONSE);
+                    });
+                } else {
+                    resolve({});
+                }
+            });
         }, {
             urls: ["<all_urls>"]
         }, ["blocking"]);
@@ -27,5 +40,10 @@ export class RequestListenerConfigurer {
     private isBlockedHost(url: string): boolean {
         var host = new URL(url).hostname;
         return this.blockedHosts.contains(host);
+    }
+
+    private isFreshPopup(tab: Tab): boolean {
+        console.log(tab.url);
+        return (tab.url === 'about:blank');
     }
 }

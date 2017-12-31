@@ -12,18 +12,20 @@ export class HostsFromZipReader {
     public read(): Promise<Hosts> {
         return new Promise((resolve: (hosts: Hosts) => void) => {
             let hosts: Hosts = {};
-            this.getFileLines("blacklist-bulk.txt").then((lines: string[]) => {
-                hosts.blacklistBulk = lines;
-                return this.getFileLines("blacklist-manual.txt");
-            }).then((lines: string[]) => {
-                hosts.blacklistManual = lines;
-                return this.getFileLines("blacklist-manual-extra.txt");
-            }).then((lines: string[]) => {
-                hosts.blacklistManualExtra = lines;
-                return this.getFileLines("whitelist.txt");
-            }).then((lines: string[]) => {
-                hosts.whitelist = lines;
-            }).then(() => {
+            Promise.all([
+                this.getFileLines("blacklist-bulk.txt").then((lines: string[]) => {
+                    hosts.blacklistBulk = lines;
+                }),
+                this.getFileLines("blacklist-manual.txt").then((lines: string[]) => {
+                    hosts.blacklistManual = lines;
+                }),
+                this.getFileLines("blacklist-manual-extra.txt").then((lines: string[]) => {
+                    hosts.blacklistManualExtra = lines;
+                }),
+                this.getFileLines("whitelist.txt").then((lines: string[]) => {
+                    hosts.whitelist = lines;
+                })
+            ]).then(() => {
                 resolve(hosts);
             });
         });

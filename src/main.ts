@@ -2,6 +2,8 @@ import { ConfigurationStorage } from "./storage/ConfigurationStorage";
 import { HostsStorage } from "./storage/HostsStorage";
 import { Hosts } from "./model/Hosts";
 import { RequestListenerConfigurer } from "./RequestListenerConfigurer";
+import { Configuration } from "./model/Configuration";
+import { Log } from "./Log";
 
 export class Main {
 
@@ -10,12 +12,26 @@ export class Main {
             ConfigurationStorage.getInstance().createDefaultIfNeeded(),
             HostsStorage.getInstance().createDefaultIfNeeded()
         ]).then(() => {
-            HostsStorage.getInstance().get().then((hosts: Hosts | null) => {
-                if (hosts === null) {
-                    throw new Error("Hosts not found.");
-                }
+            let configuration: Configuration;
+            let hosts: Hosts;
+            Promise.all([
+                ConfigurationStorage.getInstance().get().then((configurationParameter: Configuration | null) => {
+                    if (configurationParameter === null) {
+                        throw new Error("Configuration not found.");
+                    }
+                    configuration = configurationParameter;
+                }),
+                HostsStorage.getInstance().get().then((hostsParameter: Hosts | null) => {
+                    if (hostsParameter === null) {
+                        throw new Error("Hosts not found.");
+                    }
+                    hosts = hostsParameter;
+                })
+            ]).then((): void => {
+                Log.init(configuration);
                 new RequestListenerConfigurer(hosts).configure();
             });
+            
         });
     }
 }

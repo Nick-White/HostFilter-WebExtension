@@ -11,7 +11,7 @@ export class HostsFromZipReader {
 
     public read(): Promise<Hosts> {
         return new Promise((resolve: (hosts: Hosts) => void) => {
-            let hosts: Hosts = {};
+            let hosts: any = {};
             Promise.all([
                 this.getFileLines("blacklist-bulk.txt").then((lines: string[]) => {
                     hosts.blacklistBulk = lines;
@@ -26,7 +26,7 @@ export class HostsFromZipReader {
                     hosts.whitelist = lines;
                 })
             ]).then(() => {
-                resolve(hosts);
+                resolve(<Hosts>hosts);
             });
         });
     }

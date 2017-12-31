@@ -6,8 +6,8 @@ export class Log {
     private static INSTANCE: Log | null = null;
 
     private readonly configuration: Configuration;
-    private readonly blockedEntries: string[];
-    private readonly allowedEntries: string[];
+    public readonly blockedEntries: string[];
+    public readonly allowedEntries: string[];
 
     private constructor(configuration: Configuration) {
         this.configuration = configuration;

@@ -109,7 +109,31 @@ class ImportHostsAspect {
     }
 }
 
+class ViewLogAspect {
+
+    private static $viewLogButton: JQuery<HTMLElement>;
+
+    public static init(): void {
+        this.initReferences();
+        this.initActions();
+    }
+
+    private static initReferences(): void {
+        this.$viewLogButton = $("#viewLogButton");
+    }
+
+    private static initActions(): void {
+        this.$viewLogButton.on("click", () => {
+            browser.tabs.create({
+                active: true,
+                url: "/logEntries/logEntries.html"
+            });
+        });
+    }
+}
+
 $(document).ready(function() {
     ConfigurationAspect.init();
     ImportHostsAspect.init();
+    ViewLogAspect.init();
 });

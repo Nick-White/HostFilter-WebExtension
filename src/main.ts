@@ -29,6 +29,9 @@ export class Main {
                 })
             ]).then((): void => {
                 Log.init(configuration);
+                browser.runtime.getBackgroundPage().then((window: Window) => {
+                    (<any>window).log = Log.getInstance();
+                });
                 new RequestListenerConfigurer(hosts).configure();
             });
             

@@ -4,6 +4,7 @@
 	"version": "0.1",
 
 	"options_ui": {
+		"open_in_tab": true,
 		"page": "options/options.html"
 	},
 	
@@ -21,6 +22,7 @@
 	},
 	
 	"web_accessible_resources": [
-		"empty_content/text.txt"
+		"empty_content/text.txt",
+		"logEntries/logEntries.html"
 	]
 }

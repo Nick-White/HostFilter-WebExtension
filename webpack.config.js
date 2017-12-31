@@ -29,5 +29,12 @@ var optionsConfig = Object.assign({}, commonConfig, {
     path: path.resolve(__dirname, "dist/options")
   }
 });
+var logEntriesConfig = Object.assign({}, commonConfig, {
+  entry: "./src/logEntries.ts",
+  output: {
+    filename: "logEntries.js",
+    path: path.resolve(__dirname, "dist/logEntries")
+  }
+});
 
-module.exports = [mainConfig, optionsConfig];
+module.exports = [mainConfig, optionsConfig, logEntriesConfig];

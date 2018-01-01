@@ -1,5 +1,6 @@
 import * as JSZip from "jszip";
 import { Hosts } from "./model/Hosts";
+import { HostsFileNames } from "./model/HostsFileNames";
 
 export class HostsFromZipReader {
 
@@ -13,19 +14,19 @@ export class HostsFromZipReader {
         return new Promise((resolve: (hosts: Hosts) => void) => {
             let hosts: any = {};
             Promise.all([
-                this.getFileLines("blacklist-bulk.txt").then((lines: string[]) => {
+                this.getFileLines(HostsFileNames.BLACKLIST_BULK).then((lines: string[]) => {
                     hosts.blacklistBulk = lines;
                 }),
-                this.getFileLines("blacklist-manual.txt").then((lines: string[]) => {
+                this.getFileLines(HostsFileNames.BLACKLIST_MANUAL).then((lines: string[]) => {
                     hosts.blacklistManual = lines;
                 }),
-                this.getFileLines("blacklist-manual-extra.txt").then((lines: string[]) => {
+                this.getFileLines(HostsFileNames.BLACKLIST_MANUAL_EXTRA).then((lines: string[]) => {
                     hosts.blacklistManualExtra = lines;
                 }),
-                this.getFileLines("whitelist.txt").then((lines: string[]) => {
+                this.getFileLines(HostsFileNames.WHITELIST).then((lines: string[]) => {
                     hosts.whitelist = lines;
                 }),
-                this.getFileLines("whitelist-extra.txt").then((lines: string[]) => {
+                this.getFileLines(HostsFileNames.WHITELIST_EXTRA).then((lines: string[]) => {
                     hosts.whitelistExtra = lines;
                 })
             ]).then(() => {

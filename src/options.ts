@@ -8,6 +8,7 @@ import { JSZipObject } from "jszip";
 import { HostsFromZipReader } from "./HostsFromZipReader";
 import { Hosts } from "./model/Hosts";
 import { HostsStorage } from "./storage/HostsStorage";
+import { HostsToZipWriter } from "./HostsToZipWriter";
 
 class ConfigurationAspect {
 
@@ -109,6 +110,39 @@ class ImportHostsAspect {
     }
 }
 
+class ExportHostsAspect {
+
+    private static $exportHostsButton: JQuery<HTMLElement>;
+
+    public static init(): void {
+        this.initReferences();
+        this.initActions();
+    }
+
+    private static initReferences(): void {
+        this.$exportHostsButton = $("#exportHostsButton");
+    }
+
+    private static initActions(): void {
+        this.$exportHostsButton.on("click", (): void => {
+            HostsStorage.getInstance().get().then((hosts: Hosts | null) => {
+                if (hosts === null) {
+                    throw new Error("Hosts not found.");
+                }
+                new HostsToZipWriter(hosts).write().then((content: ArrayBuffer) => {
+                    var url = URL.createObjectURL(new Blob([content]));
+                    browser.downloads.download({
+                        url: url,
+                        filename: "HostFilter (config).zip",
+                        saveAs: true
+                    });
+                });
+            });
+        });
+    }
+
+}
+
 class ViewLogAspect {
 
     private static $viewLogButton: JQuery<HTMLElement>;
@@ -135,5 +169,6 @@ class ViewLogAspect {
 $(document).ready(function() {
     ConfigurationAspect.init();
     ImportHostsAspect.init();
+    ExportHostsAspect.init();
     ViewLogAspect.init();
 });

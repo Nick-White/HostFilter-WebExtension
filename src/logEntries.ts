@@ -1,6 +1,9 @@
 import * as $ from "jquery";
 import Event = JQuery.Event;
 import { Log, LogEntry } from "./Log";
+import { HostsStorage } from "./storage/HostsStorage";
+import { Hosts } from "./model/Hosts";
+import { ArrayUtils } from "./utils/ArrayUtils";
 
 class LogEntriesPage {
 
@@ -37,7 +40,23 @@ class LogEntriesPage {
             this.markHost(event, this.hostsToAllow, "(Will be allowed)");
         });
         this.$saveButton.on("click", (): void => {
-        })
+            if ((this.hostsToAllow.length === 0) && (this.hostsToBlock.length === 0)) {
+                return;
+            }
+            HostsStorage.getInstance().get().then((hosts: Hosts | null) => {
+                if (hosts === null) {
+                    throw new Error("Hosts not found.");
+                }
+
+                ArrayUtils.addAll(hosts.blacklistManualExtra, this.hostsToBlock);
+                ArrayUtils.removeAll(hosts.blacklistManualExtra, this.hostsToAllow);
+
+                ArrayUtils.addAll(hosts.whitelistExtra, this.hostsToAllow);
+                ArrayUtils.removeAll(hosts.whitelistExtra, this.hostsToBlock);
+                
+                HostsStorage.getInstance().set(hosts);
+            });
+    })
     }
 
     private static markHost(event: Event<HTMLElement>, hosts: string[], replacementText: string): void {

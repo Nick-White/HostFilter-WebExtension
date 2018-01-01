@@ -3,6 +3,12 @@
 	"name": "HostFilter-WebExtension",
 	"version": "0.1",
 
+	"applications": {
+		"gecko": {
+			"id": "HostFilter-WebExtension@email.com"
+		}
+	},
+
 	"options_ui": {
 		"open_in_tab": true,
 		"page": "options/options.html"

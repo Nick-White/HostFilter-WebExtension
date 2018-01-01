@@ -18,7 +18,7 @@ export class RequestListenerConfigurer {
     public constructor(hosts: Hosts) {
         this.blockedHosts = new Set();
         CollectionUtils.addAll(this.blockedHosts, [hosts.blacklistBulk, hosts.blacklistManual, hosts.blacklistManualExtra]);
-        CollectionUtils.removeAll(this.blockedHosts, hosts.whitelist);
+        CollectionUtils.removeAll(this.blockedHosts, [hosts.whitelist, hosts.whitelistExtra]);
     }
 
     public configure(): void {

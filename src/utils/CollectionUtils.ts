@@ -10,9 +10,11 @@ export class CollectionUtils {
         });
     }
 
-    public static removeAll<E>(set: Set<E>, elementArray: E[]): void {
-        elementArray.forEach((element: E) => {
-            set.remove(element);
+    public static removeAll<E>(set: Set<E>, elementMatrix: E[][]): void {
+        elementMatrix.forEach((elementArray: E[]) => {
+            elementArray.forEach((element: E) => {
+                set.remove(element);
+            });
         });
     }
 }

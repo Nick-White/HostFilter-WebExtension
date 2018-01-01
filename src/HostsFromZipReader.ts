@@ -24,6 +24,9 @@ export class HostsFromZipReader {
                 }),
                 this.getFileLines("whitelist.txt").then((lines: string[]) => {
                     hosts.whitelist = lines;
+                }),
+                this.getFileLines("whitelist-extra.txt").then((lines: string[]) => {
+                    hosts.whitelistExtra = lines;
                 })
             ]).then(() => {
                 resolve(<Hosts>hosts);

@@ -23,7 +23,8 @@ export class HostsStorage extends Storage<Hosts> {
             blacklistBulk: [],
             blacklistManual: [],
             blacklistManualExtra: [],
-            whitelist: []
+            whitelist: [],
+            whitelistExtra: []
         };
     }
 }

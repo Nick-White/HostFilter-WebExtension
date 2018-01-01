@@ -1,13 +1,14 @@
 import { FilterOutcome } from "./model/FilterOutcome";
 import { Configuration, LogEntryType } from "./model/Configuration";
+import { ArrayUtils } from "./utils/ArrayUtils";
 
 export class Log {
 
     private static INSTANCE: Log | null = null;
 
     private readonly configuration: Configuration;
-    public readonly blockedEntries: string[];
-    public readonly allowedEntries: string[];
+    public readonly blockedEntries: LogEntry[];
+    public readonly allowedEntries: LogEntry[];
 
     private constructor(configuration: Configuration) {
         this.configuration = configuration;
@@ -43,21 +44,53 @@ export class Log {
         }
     }
 
-    private logEntry(url: string, host: string, entries: string[]): void {
-        let entry: string;
+    private logEntry(url: string, host: string, entries: LogEntry[]): void {
+        if (host.length === 0) {
+            return;
+        }
+        let entry: LogEntry;
         switch (this.configuration.logEntryType) {
             case (LogEntryType.HOST):
-                entry = host;
+                entry = new HostLogEntry();
                 break;
             case (LogEntryType.URL):
-                entry = url;
+                entry = new UrlLogEntry();
                 break;
             default:
                 throw new Error("Unsupported log entry type: [" + this.configuration.logEntryType + "]");
         }
-        if ((entry.length > 0) && (!this.configuration.logDistinct || (entries.indexOf(entry) === -1))) {
+        entry.url = url;
+        entry.host = host;
+        if (!this.configuration.logDistinct || !this.entryExists(entry, entries)) {
             entries.push(entry);
         }
     }
+
+    private entryExists(entry: LogEntry, entries: LogEntry[]): boolean {
+        return ArrayUtils.contains(entries, (candidateEntry: LogEntry): boolean => {
+            return (candidateEntry.host === entry.host);
+        })
+    }
 }
 
+export abstract class LogEntry {
+    
+    public url: string;
+    public host: string;
+
+    public abstract get text(): string;
+}
+
+class HostLogEntry extends LogEntry {
+
+    public get text(): string {
+        return this.host;
+    }
+}
+
+class UrlLogEntry extends LogEntry {
+
+    public get text(): string {
+        return this.url;
+    }
+}

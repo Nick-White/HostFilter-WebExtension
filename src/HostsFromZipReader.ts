@@ -38,7 +38,12 @@ export class HostsFromZipReader {
     private getFileLines(fileName: string): Promise<string[]> {
         return new Promise<string[]>((resolve: (lines: string[]) => void) => {
             this.zip.file(fileName).async("text").then((content: string) => {
-                let lines: string[] = content.trim().split(/\r?\n/);
+                let lines: string[];
+                if (content.length > 0) {
+                    lines = content.trim().split(/\r?\n/);
+                } else {
+                    lines = [];
+                }
                 resolve(lines);
             });
         });

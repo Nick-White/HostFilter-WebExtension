@@ -1,4 +1,5 @@
-/dist/logEntries/logEntries.js
 /dist/main.js
+/dist/logEntries/logEntries.js
 /dist/options/options.js
+/dist/web-ext-artifacts
 /node_modules

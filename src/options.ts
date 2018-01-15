@@ -2,6 +2,7 @@ import { Configuration, LogEntryType } from "./model/Configuration";
 import { ConfigurationStorage } from "./storage/ConfigurationStorage";
 import { JQueryFieldUtils } from "./utils/JQueryFieldUtils";
 import { BooleanUtils } from "./utils/BooleanUtils";
+import PlatformInfo = browser.runtime.PlatformInfo;
 import * as $ from "jquery";
 import * as JSZip from "jszip";
 import { JSZipObject } from "jszip";
@@ -131,16 +132,25 @@ class ExportHostsAspect {
                 }
                 new HostsToZipWriter(hosts).write().then((content: ArrayBuffer) => {
                     var url = URL.createObjectURL(new Blob([content]));
-                    browser.downloads.download({
-                        url: url,
-                        filename: "HostFilter (config).zip",
-                        saveAs: true
+                    this.determineIfChooseDownloadPathSupported().then((chooseDownloadPathSupported: boolean): void => {
+                        browser.downloads.download({
+                            url: url,
+                            filename: "HostFilter (config).zip",
+                            saveAs: chooseDownloadPathSupported
+                        });
                     });
                 });
             });
         });
     }
 
+    private static determineIfChooseDownloadPathSupported(): Promise<boolean> {
+        return new Promise<boolean>((resolve: (supported: boolean) => void): void => {
+            browser.runtime.getPlatformInfo().then((info: PlatformInfo): void => {
+                resolve(info.os !== "android");
+            });
+        });
+    }
 }
 
 class ViewLogAspect {

@@ -54,7 +54,9 @@ class LogEntriesPage {
                 ArrayUtils.addAll(hosts.whitelistExtra, this.hostsToAllow);
                 ArrayUtils.removeAll(hosts.whitelistExtra, this.hostsToBlock);
                 
-                HostsStorage.getInstance().set(hosts);
+                HostsStorage.getInstance().set(hosts).then((): void => {
+                    browser.runtime.reload();
+                });
             });
     })
     }

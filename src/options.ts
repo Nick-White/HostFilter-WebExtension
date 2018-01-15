@@ -48,7 +48,9 @@ class ConfigurationAspect {
             logBlocked: BooleanUtils.fromString(JQueryFieldUtils.getCheckedRadioValue(this.$logBlockedRadios)),
             logDistinct: BooleanUtils.fromString(JQueryFieldUtils.getCheckedRadioValue(this.$logDistinctRadios))
         };
-        ConfigurationStorage.getInstance().set(configuration);
+        ConfigurationStorage.getInstance().set(configuration).then((): void => {
+            browser.runtime.reload();
+        });
     }
 
     public static populate(): void {
@@ -92,7 +94,9 @@ class ImportHostsAspect {
             let fileContent: ArrayBuffer = fileReader.result;
             JSZip.loadAsync(fileContent).then((zip: JSZip) => {
                 new HostsFromZipReader(zip).read().then((hosts: Hosts) => {
-                    HostsStorage.getInstance().set(hosts);
+                    HostsStorage.getInstance().set(hosts).then((): void => {
+                        browser.runtime.reload();
+                    });
                 });
             });
         };
